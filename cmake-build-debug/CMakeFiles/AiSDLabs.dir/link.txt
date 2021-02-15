@@ -1,0 +1,3 @@
+"D:\Programmes\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\AiSDLabs.dir/objects.a
+D:\Programmes\MinGW_w64\mingw64\bin\ar.exe cr CMakeFiles\AiSDLabs.dir/objects.a @CMakeFiles\AiSDLabs.dir\objects1.rsp
+D:\Programmes\MinGW_w64\mingw64\bin\g++.exe -g   -Wl,--whole-archive CMakeFiles\AiSDLabs.dir/objects.a -Wl,--no-whole-archive  -o AiSDLabs.exe -Wl,--out-implib,libAiSDLabs.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\AiSDLabs.dir\linklibs.rsp
