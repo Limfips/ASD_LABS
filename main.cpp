@@ -1,5 +1,5 @@
 #include <iostream>
-
+using namespace std;
 
 /*
  * Lab_2:
@@ -8,8 +8,20 @@
  *  3. Переменная целого типа.
  */
 
-int main() {
+struct Student{
+    char firstName[10];
+    char *secondName;
+    long int id;
+    long int *pMoney;
+    int size;
+};
 
+Student& initStudent(){
+
+}
+
+
+int main() {
 
 
 
