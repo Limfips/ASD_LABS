@@ -1,27 +1,54 @@
 #include <iostream>
 
 
-int main() {
-    char array[4];
-    char *pointer;
-//2.2 Ввести данные в массив №1
-    int arraySize = sizeof (array)/sizeof (array[0]);
-    for (int i = 0; i < arraySize; ++i) {
-        std::cout << ">>";
-        std::cin >> array[i];
-    }
-    std::cout << std::endl;
+struct person
+{
+    char name[20];
+    int age;
+};
 
-//2.3 Ещё раз проверить содержимое массива №1
-    for (char symbol:array){
-        std::cout << symbol;
-    }
-    std::cout << std::endl;
-    pointer = array;
+template <size_t N>
+void writeDataText(FILE *fp, person (&array)[N]);
+void readDataText(FILE *fp);
+int main()
+{
+    FILE *fp = nullptr;
 
-    std::cout << "1 ->" << (void*) array << std::endl;
-    std::cout << "2 ->" << (void*) pointer<< std::endl;
-    std::cout << "3 ->" << *pointer << std::endl;
-
+    person people[] = { "Tom", 23, "Alice", 27, "Bob", 31, "Kate", 29 };
+    writeDataText(fp, people);
+    readDataText(fp);
     return 0;
+}
+
+
+template <size_t N>
+void writeDataText(FILE *fp, person (&array)[N]) {
+    const char * filename = "users.dat";
+
+    if ((fp = fopen(filename, "w")) == nullptr)
+    {
+        perror("Error occured while opening file");
+    }
+
+    for(int i=0; i<N; i++)
+    {
+        fprintf(fp, "%s     %d\n", array[i].name, array[i].age);
+    }
+    fclose(fp);
+}
+
+void readDataText(FILE *fp) {
+    const char * filename = "users.dat";
+    char name[20];
+    int age;
+    if ((fp = fopen(filename, "r")) == nullptr)
+    {
+        perror("Error occured while opening file");
+    }
+
+    while((fscanf(fp, "%s   %d\n", &name, &age))!=EOF)
+    {
+        printf("%s      %d\n", name, age);
+    }
+    fclose(fp);
 }
