@@ -23,7 +23,7 @@ Student *initStudent(int id) {
 
 void fillArray(Student &student) {
     int sizeArray;
-    cout << "How many elements of the array?:\n>>";
+    cout << "How many elements of the array are create?:\n>>";
     cin >> sizeArray;
     student.pRatings = new long[sizeArray]();
     for (int i = 0; i < sizeArray; ++i) {
@@ -34,9 +34,9 @@ void fillArray(Student &student) {
 }
 
 void inputFirstAndSecondName(Student &student) {
-    cout << "How first name?:\n>>";
+    cout << "What is your first name?:\n>>";
     cin >> student.firstName;
-    cout << "How second name?:\n>>";
+    cout << "What is your second name?:\n>>";
     student.secondName = new char[20];
     cin >> student.secondName;
 
@@ -120,7 +120,7 @@ Student *readAllDataBinary(int size) {
     auto *students = new Student[size]();
 
     const char *errorText = "Error occured while opening file";
-    const char *filename = "text_data_file.dat";
+    const char *filename = "binary_data_file.dat";
 
     char *c;
     int j;
@@ -132,18 +132,24 @@ Student *readAllDataBinary(int size) {
     }
 
     Student *ptr;
-    for(int i=0; i<size; i++)
+    int k = 0;
+    int i = 0;
+    while ((j = getc(fileBinary))!=EOF)
     {
-        ptr = (struct Student *) malloc(sizeB);
-        c = (char *) ptr;
-        while ((j = getc(fileBinary))!=EOF)
-        {
-            *c = j;
-            c++;
+        if (k == sizeB) {
+            k = 0;
+            students[i++] = *ptr;
         }
+        if (k == 0) {
+            ptr = (struct Student *) malloc(sizeB);
+            c = (char *) ptr;
+        }
+
+        *c = (char) j;
+        c++;
+        k++;
     }
-
-
+    students[i++] = *ptr;
 
     fclose(fileBinary);
     free(ptr);
@@ -193,17 +199,14 @@ int main() {
     writeAllDataBinary(student[0], baseCount);
 
     student[1] = readDataText(baseCount, textFile);
-//    student[2] = readAllDataBinary(baseCount);
+    student[2] = readAllDataBinary(baseCount);
     for (int i = 0; i < baseCount; i++) {
         cout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
         printInfo(&(student[0][i]));
         printInfo(&(student[1][i]));
-//        printInfo(&(student[2][i]));
+        printInfo(&(student[2][i]));
         cout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
     }
-
-
-
 
     // очистка памяти
     for (int i = 0; i < baseCount; i++) {
