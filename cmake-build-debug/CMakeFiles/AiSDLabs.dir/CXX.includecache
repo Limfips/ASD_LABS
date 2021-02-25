@@ -7,6 +7,8 @@
 #IncludeRegexTransform: 
 
 D:/Projects/CLion/AiSDLabs/main.cpp
-iostream
+cstdio
+-
+cstdlib
 -
 

@@ -1,54 +1,78 @@
-#include <iostream>
-
+#include <cstdio>
+#include <cstdlib>
 
 struct person
 {
-    char name[20];
+    char name[16];
     int age;
 };
 
-template <size_t N>
-void writeDataText(FILE *fp, person (&array)[N]);
-void readDataText(FILE *fp);
+int save(const char * filename, struct person *p);
+int load(const char * filename);
+
 int main()
 {
-    FILE *fp = nullptr;
+    const char * filename = "person.dat";
+    struct person tom = { "Tom", 21 };
 
-    person people[] = { "Tom", 23, "Alice", 27, "Bob", 31, "Kate", 29 };
-    writeDataText(fp, people);
-    readDataText(fp);
+    save(filename, &tom);
+    load(filename);
+
     return 0;
 }
 
+// запись структуры в файл
+int save(const char * filename, struct person *p)
+{
+    FILE * fp;
+    char *c;
+    int size = sizeof(struct person); // количество записываемых байтов
 
-template <size_t N>
-void writeDataText(FILE *fp, person (&array)[N]) {
-    const char * filename = "users.dat";
-
-    if ((fp = fopen(filename, "w")) == nullptr)
+    if ((fp = fopen(filename, "wb")) == nullptr)
     {
         perror("Error occured while opening file");
+        return 1;
     }
-
-    for(int i=0; i<N; i++)
+    // устанавливаем указатель на начало структуры
+    c = (char *)p;
+    // посимвольно записываем в файл структуру
+    for (int i = 0; i < size; i++)
     {
-        fprintf(fp, "%s     %d\n", array[i].name, array[i].age);
+        putc(*c++, fp);
     }
     fclose(fp);
+    return 0;
 }
 
-void readDataText(FILE *fp) {
-    const char * filename = "users.dat";
-    char name[20];
-    int age;
-    if ((fp = fopen(filename, "r")) == nullptr)
+// загрузка из файла структуры
+int load(const char * filename)
+{
+    FILE * fp;
+    char *c;
+    int i; // для считывания одного символа
+    // количество считываемых байтов
+    int size = sizeof(struct person);
+    // выделяем память для считываемой структуры
+    auto * ptr = (struct person *) malloc(size);
+
+    if ((fp = fopen(filename, "rb")) == nullptr)
     {
         perror("Error occured while opening file");
+        return 1;
     }
 
-    while((fscanf(fp, "%s   %d\n", &name, &age))!=EOF)
+    // устанавливаем указатель на начало блока выделенной памяти
+    c = (char *)ptr;
+    // считываем посимвольно из файла
+    while ((i = getc(fp))!=EOF)
     {
-        printf("%s      %d\n", name, age);
+        *c = i;
+        c++;
     }
+
     fclose(fp);
+    // вывод на консоль загруженной структуры
+    printf("%s %d \n", ptr->name, ptr->age);
+    free(ptr);
+    return 0;
 }
