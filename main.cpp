@@ -12,13 +12,12 @@ struct Student{
         int count;
 };
 
-const char *getStudentToText(Student *student);
-
-char *getArrayToText(Student *student);
-
-Student initStudent(int id) {
-    Student student = {};
-    student.id = id;
+Student *initStudent(int id) {
+    auto *student = new Student();
+    student->id = id;
+    student->secondName = new char[0]();
+    student->pRatings = new long[0]();
+    student->count = 0;
     return student;
 }
 
@@ -64,84 +63,146 @@ void clear(Student &student) {
     delete [] student.pRatings;
 }
 
-void readDataText(Student &student, FILE *file) {
-//    file = fopen ("text_data_file.dat","r");
-//    if (file!=nullptr)
-//    {
-//        fgets((char*) &student, sizeof(student), file);
-//        fclose (file);
-//    }
-}
+Student *readDataText(int size, FILE *file) {
+    auto *students = new Student[size]();
 
-void writeDataText(Student student[], FILE *file) {
-    file = fopen("text_data_file.txt","w");
-    const char *textFormat = "id:%d | fName:%s | sName:%s | array:%s | count:%d";
-    char *arrayText;
-    if (file!=nullptr)
+    const char *errorText = "Error occured while opening file";
+    const char *filename = "text_data_file.dat";
+    const char *fTextFormat = "id:%d | fName:%s | sName:%s | count:%d | array:";
+    const char *sTextFormat = "%d ";
+    const char *tTextFormat = "\n";
+
+    if ((file = fopen(filename, "r")) == nullptr)
     {
-        int size = (int) sizeof((void*)student)/ sizeof(student[0]);
+        perror(errorText);
+    }
 
-        for (int i = 0; i < size; i++) {
-            arrayText = getArrayToText(&student[i]);
-            fprintf(file, textFormat, student->id, student->firstName, student->secondName, arrayText, student->count);
+    for(int i=0; i<size; i++)
+    {
+        students[i] = *initStudent(0);
+        fscanf(file, fTextFormat, &(students[i].id), &(students[i].firstName), (students[i].secondName), &(students[i].count));
+        for (int j = 0; j < students[i].count; j++) {
+            fscanf(file, sTextFormat, &(students[i].pRatings[j]));
         }
-
-        fclose(file);
+        fscanf(file, tTextFormat);
     }
+
+    fclose(file);
+    return students;
 }
 
-char *getArrayToText(Student *student) {
-    char text[student->count];
-    for (int i = 0; i < student->count; i++) {
-       text[i] = (char) (student->pRatings)[i];
+FILE *fileBinary;
+
+void writeDataText(Student *array, int size, FILE *file) {
+    const char *errorText = "Error occured while opening file";
+    const char *filename = "text_data_file.dat";
+    const char *fTextFormat = "id:%d | fName:%s | sName:%s | count:%d | array:";
+    const char *sTextFormat = "%d ";
+    const char *tTextFormat = "\n";
+
+    if ((file = fopen(filename, "w")) == nullptr)
+    {
+        perror(errorText);
     }
-    return text;
+
+    for(int i=0; i<size; i++)
+    {
+        fprintf(file, fTextFormat, (array + i)->id, (array + i)->firstName, (array + i)->secondName, (array + i)->count);
+        for (int j = 0; j < (array + i)->count; j++) {
+            fprintf(file, sTextFormat, ((array + i)->pRatings)[j]);
+        }
+        fprintf(file, tTextFormat);
+    }
+    fclose(file);
 }
 
-//void readAllDataBinary(vector <Student> vStudent) {
-//    Student student;
-//    ifstream fin("binary_data_file.txt", ios::in);
-//    while(!fin.eof())
-//    {
-//        fin.read((char*)&student, sizeof(Student));
-//        vStudent.push_back(student);
-//    }
-//    fin.close();
-//}
-//
-//void writeAllDataBinary(vector <Student> vStudent) {
-//    ofstream fout("binary_data_file.txt", ostream::binary);
-//    for(int i =0; i<= vStudent.size(); ++i)
-//    {
-//        fout.write((char*)&vStudent.at(i), sizeof(Student));
-//    }
-//    fout.close();
-//}
+Student *readAllDataBinary(int size) {
+    auto *students = new Student[size]();
+
+    const char *errorText = "Error occured while opening file";
+    const char *filename = "text_data_file.dat";
+
+    char *c;
+    int j;
+    int sizeB = sizeof(struct Student);
+
+    if ((fileBinary = fopen(filename, "rb")) == nullptr)
+    {
+        perror(errorText);
+    }
+
+    Student *ptr;
+    for(int i=0; i<size; i++)
+    {
+        ptr = (struct Student *) malloc(sizeB);
+        c = (char *) ptr;
+        while ((j = getc(fileBinary))!=EOF)
+        {
+            *c = j;
+            c++;
+        }
+    }
+
+
+
+    fclose(fileBinary);
+    free(ptr);
+    return students;
+}
+
+void writeAllDataBinary(Student *array, int size) {
+    const char *errorText = "Error occured while opening file";
+    const char *filename = "binary_data_file.dat";
+
+    char *c;
+    int sizeB = sizeof(struct Student);
+
+    if ((fileBinary = fopen(filename, "wb")) == nullptr)
+    {
+        perror(errorText);
+    }
+
+    for(int i=0; i<size; i++)
+    {
+        c = (char *) &(array[i]);
+        for (int j = 0; j < sizeB; j++) {
+            putc(*c++, fileBinary);
+        }
+    }
+    fclose(fileBinary);
+}
 
 int main() {
     FILE *textFile = nullptr;
-    int baseCount = 1;
+    int baseCount = 3;
     Student *student[baseCount];
     // для ввода данных и их сохранения в файлах
-    student[0] = new Student[baseCount];
+    student[0] = new Student[baseCount]();
     // для считывания данных из текстового файла
-    student[1] = new Student[baseCount];
+    student[1] = new Student[baseCount]();
     // для считывания данных из двоичного файла
-    student[2] = new Student[baseCount];
+    student[2] = new Student[baseCount]();
 
     for (int i = 0; i < baseCount; i++) {
-        student[0][i] = initStudent(0 + i);
+        student[0][i] = *initStudent(0 + i);
         fillArray(student[0][i]);
         inputFirstAndSecondName(student[0][i]);
     }
 
-    writeDataText(student[0], textFile);
-//        writeAllDataBinary(student[0][i]);
+    writeDataText(student[0], baseCount, textFile);
+    writeAllDataBinary(student[0], baseCount);
 
+    student[1] = readDataText(baseCount, textFile);
+//    student[2] = readAllDataBinary(baseCount);
     for (int i = 0; i < baseCount; i++) {
-        readDataText(student[1][i], textFile);
-        printInfo(&student[1][i]);
+        cout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
+        printInfo(&(student[0][i]));
+        printInfo(&(student[1][i]));
+//        printInfo(&(student[2][i]));
+        cout << "++++++++++++++++++++++++++++++++++++++++++" << endl;
     }
+
+
 
 
     // очистка памяти
