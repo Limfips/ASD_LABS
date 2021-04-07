@@ -17,13 +17,14 @@ void printStudentInfo(Student *student) {
 }
 
 struct Link {
+    Link *prev;
     Link *next;
     Student *value;
 };
 
 void showList(Link *link) {
     Link *q = link->next;
-    while (q) {
+    while (q->value != nullptr) {
         cout << "address: " << q << " | next: " << q->next  << " | value: (";
         printStudentInfo(q->value);
         cout << ")" << endl;
@@ -33,25 +34,27 @@ void showList(Link *link) {
 }
 
 Link* initLink(Student *firstValue) {
-    Link *firstLink = new Link{nullptr, firstValue};
-    Link *header = new Link{firstLink, nullptr};
+    Link *firstLink = new Link{nullptr, nullptr, firstValue};
+    Link *header = new Link{firstLink, firstLink, nullptr};
+    firstLink->prev = header;
+    firstLink->next = header;
     return header;
 };
 
 Link* addItem(Link *list, Student *value) {
     Link *q = list->next;
-    while (q->next != nullptr) { q = q->next; };
-    Link *nextLink = new Link{nullptr, value};
+    while (q->next->value != nullptr) { q = q->next; };
+    Link *nextLink = new Link{q, q->next, value};
     q->next = nextLink;
     return list;
 }
 
 Link* deleteItem(Link *list, Student *value) {
-    Link *q = list;
-    while (q->next->value->id != value->id) { q = q->next; };
-    Link *tmp = q->next;
-    q->next = tmp->next;
-    free(tmp);
+    Link *q = list->next;
+    while (q->value->id != value->id) { q = q->next; };
+    q->prev->next = q->next;
+    q->next->prev = q->prev;
+    free(q);
     return list;
 }
 
@@ -77,6 +80,9 @@ int main() {
     showList(linkedList);
 
     linkedList = deleteItem(linkedList, &student1);
+    showList(linkedList);
+
+    linkedList = addItem(linkedList, &student1);
     showList(linkedList);
 
     return 0;
