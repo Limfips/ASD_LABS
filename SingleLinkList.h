@@ -54,4 +54,16 @@ public: Link* deleteItem(Student *value) {
         free(tmp);
         return header;
     }
+
+public: Student* findById(int id) {
+        Link *q = header;
+        while (q->next != nullptr) {
+            if (q->value != nullptr && q->value->id == id) {
+                return q->value;
+            } else {
+                q = q->next;
+            }
+        };
+        return nullptr;
+}
 };
