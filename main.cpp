@@ -46,16 +46,26 @@ int main() {
     cout << "'"<< findItem4 <<"' index: " << indexOf2(chars, findItem4, 6) << endl;
 
     // 3. поиск в списке
-    int findId = 3;
-    cout << "item with id = " << findId << " : [";
-    printStudentInfo(linkedList.findById(findId));
+    int findId1 = 3;
+    int findId2 = 12;
+
+    cout << "item with id = " << findId1 << " : [";
+    printStudentInfo(linkedList.findById(findId1));
+    cout << "]"<< endl;
+
+    cout << "item with id = " << findId2 << " : [";
+    printStudentInfo(linkedList.findById(findId2));
     cout << "]"<< endl;
 
     return 0;
 }
 
 void printStudentInfo(Student *student) {
-    cout << student->id << ": " << student->firstName << " " << student->secondName << " ";
+    if (student != nullptr) {
+        cout << student->id << ": " << student->firstName << " " << student->secondName << " ";
+    } else {
+        cout << "NULL";
+    }
 }
 
 void bubble(char* item, int n) {
