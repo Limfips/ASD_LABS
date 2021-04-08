@@ -3,4 +3,4 @@ project(AiSDLabs)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(AiSDLabs main.cpp)
+add_executable(AiSDLabs main.cpp TreeList.h)

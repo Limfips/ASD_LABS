@@ -80,6 +80,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="D:/Projects/CLion/AiSDLabs/TreeList.h">
+			<Option target="AiSDLabs"/>
+		</Unit>
 		<Unit filename="D:/Projects/CLion/AiSDLabs/main.cpp">
 			<Option target="AiSDLabs"/>
 		</Unit>
