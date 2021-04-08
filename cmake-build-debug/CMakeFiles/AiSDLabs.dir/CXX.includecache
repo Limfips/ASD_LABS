@@ -6,7 +6,13 @@
 
 #IncludeRegexTransform: 
 
+D:/Projects/CLion/AiSDLabs/SingleLinkList.h
+iostream
+-
+
 D:/Projects/CLion/AiSDLabs/main.cpp
 iostream
 -
+SingleLinkList.h
+D:/Projects/CLion/AiSDLabs/SingleLinkList.h
 
