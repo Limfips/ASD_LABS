@@ -1,15 +1,8 @@
 #include <iostream>
 #include "TreeList.h"
+#include "Entiry.h"
 
 using namespace std;
-
-void printStudentInfo(Student* student){
-    if (student == nullptr) return;
-    cout
-            << "address: " << student
-            << " | " <<  student->id
-            << endl;
-}
 
 int main() {
 
@@ -26,15 +19,6 @@ int main() {
     cout << endl;
     list.print3();
     cout << endl;
-
-    printStudentInfo(list.searchByKey(90));
-    printStudentInfo(list.searchByKey(12313));
-
-    cout << "test delete_1: ";
-    list.remove(85);
-    list.print2();
-    cout << "test delete_2: ";
-    list.remove(3093);
 
     return 0;
 }

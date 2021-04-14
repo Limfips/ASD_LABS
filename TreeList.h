@@ -1,12 +1,7 @@
+#include "Entiry.h"
+
 using namespace std;
 
-struct Student{
-    long id;
-    char firstName[10];
-    const char *secondName;
-    long *pRatings;
-    int count;
-};
 
 class TreeList {
 
@@ -83,23 +78,13 @@ private:
             tmp = tmp->left;
         }
         if (parent == nullptr) {
-            cout << endl;
-            cout << "deleteNode: " << r->key << endl;
-            cout << "tmp: " << tmp->key << endl;
-
             tmpParent->left = tmp->right;
             tmp->left = r->left;
             tmp->right = r->right;
             free(r);
             root = tmp;
         } else {
-            cout << endl;
-            cout << "parent: " << parent->key << endl;
-            cout << "deleteNode: " << r->key << endl;
-            cout << "tmp: " << tmp->key << endl;
-
             parent->right = tmp;
-
             tmpParent->left = tmp->right;
             tmp->left = r->left;
             tmp->right = r->right;
